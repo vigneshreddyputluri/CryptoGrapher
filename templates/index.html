@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoGrapher Web</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="wrapper fade">
+
+        <!-- Header -->
+        <header>
+            <h1>🔐 CryptoGrapher Web</h1>
+            <p>Secure AES-256 Encryption & Decryption</p>
+        </header>
+
+        <!-- Mode Toggle -->
+        <div class="mode-toggle">
+            <button id="encryptBtn" class="active">Encrypt</button>
+            <button id="decryptBtn">Decrypt</button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" data-target="text">Text</button>
+            <button class="tab-btn" data-target="file">File</button>
+            <button class="tab-btn" data-target="image">Image</button>
+            <button class="tab-btn" data-target="video">Video</button>
+        </div>
+
+        <!-- Forms -->
+        <div class="form-container">
+
+            <!-- Text -->
+            <form id="text" class="form active" method="POST" action="/encrypt_text">
+                <textarea name="input_text" placeholder="Enter text here..." required></textarea>
+                <input type="text" name="key" placeholder="Enter key..." required>
+                <button type="submit" class="action-btn">Process</button>
+            </form>
+
+            <!-- File -->
+            <form id="file" class="form" method="POST" action="/encrypt_file" enctype="multipart/form-data">
+                <label class="custom-file-upload">
+                    <input type="file" name="file" required>
+                    📂 Choose File
+                </label>
+                <input type="text" name="key" placeholder="Enter key..." required>
+                <button type="submit" class="action-btn">Process</button>
+            </form>
+
+            <!-- Image -->
+            <form id="image" class="form" method="POST" action="/encrypt_image" enctype="multipart/form-data">
+                <label class="custom-file-upload">
+                    <input type="file" accept="image/*" name="image" required>
+                    🖼️ Choose Image
+                </label>
+                <input type="text" name="key" placeholder="Enter key..." required>
+                <button type="submit" class="action-btn">Process</button>
+            </form>
+
+            <!-- Video -->
+            <form id="video" class="form" method="POST" action="/encrypt_video" enctype="multipart/form-data">
+                <label class="custom-file-upload">
+                    <input type="file" accept="video/*" name="video" required>
+                    🎞️ Choose Video
+                </label>
+                <input type="text" name="key" placeholder="Enter key..." required>
+                <button type="submit" class="action-btn">Process</button>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>Made with ❤️ by Vignesh Reddy Putluri</p>
+        </footer>
+    </div>
+
+    <script>
+        const wrapper = document.querySelector('.wrapper');
+        const encryptBtn = document.getElementById('encryptBtn');
+        const decryptBtn = document.getElementById('decryptBtn');
+        const forms = document.querySelectorAll('.form');
+
+
+        function triggerFade() {
+            wrapper.classList.remove('fade');       
+            void wrapper.offsetWidth;               
+            wrapper.classList.add('fade');          
+        }
+
+        encryptBtn.addEventListener('click', () => {
+            if (!encryptBtn.classList.contains('active')) {
+                encryptBtn.classList.add('active');
+                decryptBtn.classList.remove('active');
+                triggerFade();
+                forms.forEach(f => f.action = f.action.replace('/decrypt_', '/encrypt_'));
+            }
+        });
+
+        decryptBtn.addEventListener('click', () => {
+            if (!decryptBtn.classList.contains('active')) {
+                decryptBtn.classList.add('active');
+                encryptBtn.classList.remove('active');
+                triggerFade();
+                forms.forEach(f => f.action = f.action.replace('/encrypt_', '/decrypt_'));
+            }
+        });
+
+        // Tab switcher
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabForms = document.querySelectorAll('.form');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const target = btn.dataset.target;
+                tabForms.forEach(form => form.classList.toggle('active', form.id === target));
+            });
+        });
+    </script>
+
+</body>
+</html>
